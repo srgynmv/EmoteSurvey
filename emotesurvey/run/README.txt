@@ -1,0 +1,1 @@
+The contents of this folder consist of the runtime resources required by Django. All the contents of this folder except this file are added to .gitignore and should not be commited.
