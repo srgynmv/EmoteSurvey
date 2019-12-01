@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>Фон</title>
+  <style>
+   body {
+    background: #c7b39b url(images/backgroundg.jpg);
+    color: #fff;
+   }
+  </style>
+ </head>
+ <body>
+  <p>...</p>
+ </body>
+</html>
