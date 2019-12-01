@@ -1,0 +1,4 @@
+.vscode
+django_env
+__pycache__
+run
