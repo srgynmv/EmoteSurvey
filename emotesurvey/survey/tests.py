@@ -6,17 +6,18 @@ class TestWithFilledDb(TestCase):
     def setUp(self):
         survey = Survey.objects.create(title='survey title')
         q1 = Question.objects.create(
-            type=AnswerTypeChoices.SINGLE,
+            type=AnswerType.SINGLE,
             text='question one text',
-            survey=survey
-        )
-        q2 = Question.objects.create(
-            type=AnswerTypeChoices.MULTI,
-            text='question two text',
             survey=survey
         )
         a1 = Answer.objects.create(text='answer1', question=q1)
         a2 = Answer.objects.create(text='answer2', question=q1)
+
+        q2 = Question.objects.create(
+            type=AnswerType.MULTIPLE,
+            text='question two text',
+            survey=survey
+        )
         a3 = Answer.objects.create(text='answer3', question=q2)
         a4 = Answer.objects.create(text='answer4', question=q2)
 
