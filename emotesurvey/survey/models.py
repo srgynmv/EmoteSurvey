@@ -20,7 +20,7 @@ class AnswerType(IntEnum):
 
     @classmethod
     def choices(cls):
-        return [(key, key.name.title()) for key in cls]
+        return [(key.value, key.name.title()) for key in cls]
 
 
 class Question(models.Model):
