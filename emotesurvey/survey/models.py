@@ -34,7 +34,8 @@ class Question(models.Model):
 
 class Answer(models.Model):
     text = models.CharField(max_length=300)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='answers', 
+                                 on_delete=models.CASCADE)
 
     def __str__(self):
         return elide(self.text)
