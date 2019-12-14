@@ -41,12 +41,8 @@ class Answer(models.Model):
         return elide(self.text)
 
 
-class Session(models.Model):
-    pass
-
-
 class Result(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    #TODO(srgynmv): add a session identifier
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answers = models.ManyToManyField(Answer)
 

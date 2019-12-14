@@ -33,8 +33,20 @@ class RecordedDataSerializer(serializers.ModelSerializer):
 
 class RawResultSerializer(serializers.Serializer):
     # TODO(srgynmv): add session and recorded_data
-    question = QuestionSerializer()
-    answers = AnswerSerializer(many=True)
+    question = serializers.IntegerField()
+    answers = serializers.ListField(child=serializers.CharField(),
+                                    allow_empty=False)
+
+    def create(self, validated_data):
+        question = Question.objects.get(pk=validated_data['question'])
+        result = Result.objects.create(question=question)
+        for answer_text in validated_data['answers']:
+            answer, created = Answer.objects.get_or_create(question=question, text=answer_text)
+            result.answers.add(answer)
+        return result
+
+    def to_representation(self, instance):
+        return ResultSerializer(instance).data
 
 
 class ResultSerializer(serializers.ModelSerializer):
