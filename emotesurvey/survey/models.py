@@ -47,12 +47,13 @@ class Session(models.Model):
 
 class Result(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answers = models.ManyToManyField(Answer)
 
 
 class RecordedData(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    result = models.ForeignKey(Result, related_name='recorded_data_set',
+                               on_delete=models.CASCADE)
     timestamp = models.TimeField()
     surprise = models.FloatField()
     fear = models.FloatField()
