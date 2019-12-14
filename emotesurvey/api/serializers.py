@@ -7,21 +7,23 @@ class AnswerSerializer(serializers.ModelSerializer):
         model = Answer
         fields = ['text']
 
+    def to_representation(self, instance):
+        return instance.text
 
-class QuestionSerializer(serializers.ModelSerializer):
-    answers = serializers.SerializerMethodField()
+
+class QuestionSerializer(serializers.HyperlinkedModelSerializer):
+    answers = AnswerSerializer(many=True)
     type = serializers.SerializerMethodField()
-
-    def get_answers(self, obj):
-        answers = obj.answers.all()
-        return [answer.text for answer in answers]
 
     def get_type(self, obj):
         return obj.get_type_display().lower()
 
     class Meta:
         model = Question
-        fields = ['id', 'type', 'text', 'answers']
+        fields = ['url', 'id', 'type', 'text', 'answers']
+        extra_kwargs = {
+            'url': {'view_name': 'api:question-detail'}
+        }
 
 
 class RecordedDataSerializer(serializers.ModelSerializer):
@@ -49,8 +51,8 @@ class RawResultSerializer(serializers.Serializer):
         return ResultSerializer(instance).data
 
 
-class ResultSerializer(serializers.ModelSerializer):
+class ResultSerializer(serializers.Serializer):
     # TODO(srgynmv): add session
-    class Meta:
-        model = Result
-        fields = ['question', 'answers', 'recorded_data_set']
+    question = serializers.PrimaryKeyRelatedField(read_only=True)
+    answers = AnswerSerializer(many=True)
+    recorded_data_set = RecordedDataSerializer(many=True)
