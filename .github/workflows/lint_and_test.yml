@@ -1,4 +1,4 @@
-name: Python application
+name: Lint and test
 
 on: [push]
 
@@ -26,4 +26,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Launch Django tests
       run: |
-        python emotesurvey/manage.py test
+        python ./emotesurvey/manage.py migrate
+        python ./emotesurvey/manage.py test
