@@ -26,5 +26,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Launch Django tests
       run: |
-        python ./emotesurvey/manage.py migrate
-        python ./emotesurvey/manage.py test
+        cd $project_root
+        python manage.py migrate
+        python manage.py test
+      env:
+        project_root: ./emotesurvey
