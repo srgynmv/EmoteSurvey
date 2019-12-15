@@ -19,6 +19,6 @@ from survey import views
 
 urlpatterns = [
     path('', views.index),
-    path('about', views.about),
-    path('contact', views.contact),
+    path('survey', views.survey),
+    path('survey/thanks', views.thanks),
 ]

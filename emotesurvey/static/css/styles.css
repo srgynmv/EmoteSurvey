@@ -1,16 +1,44 @@
-<!DOCTYPE html>
-<html>
- <head>
-  <meta charset="utf-8">
-  <title>Фон</title>
-  <style>
-   body {
-    background: #c7b39b url(images/backgroundg.jpg);
-    color: #fff;
-   }
-  </style>
- </head>
- <body>
-  <p>...</p>
- </body>
-</html>
+.button {
+    display: inline-flex;
+    margin: 10px;
+    text-decoration: none;
+    position: relative;
+    top: 300px;
+    bottom: 2px;
+    right: 10px; 
+    left: 650px;
+    font-size: 20px;
+    line-height: 20px;
+    padding: 12px 30px;
+    color: #FFF;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: 'Roboto Condensed', Тahoma, sans-serif;
+    background: #337AB7;
+    cursor: pointer;
+    border: 2px solid #BFE2FF;
+}
+.button:hover,
+.button:active,
+.button:focus {
+    color: #FFF;
+}
+.button:after,
+.button:before {
+    position: absolute;
+    height: 4px;
+    left: 50%;
+    background: #337AB7;
+    bottom: -6px;
+    content: "";
+    transition: all 280ms ease-in-out;
+    width: 0;
+}
+.button:before {
+    top: -6px;
+}
+.button:hover:after,
+.button:hover:before {
+    width: 100%;
+    left: 0;
+}

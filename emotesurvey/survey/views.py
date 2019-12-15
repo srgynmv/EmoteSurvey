@@ -1,13 +1,13 @@
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
-
+from django.shortcuts import render
 
 def index(request):
     return TemplateResponse(request, "index.html")
 
-def about(request):
-    return HttpResponse("<h2>About</h2>")
+def survey(request):
+    return render(request, "survey.html")
 
 
-def contact(request):
-    return HttpResponse("<h2>Contacts</h2>")
+def thanks(request):
+    return HttpResponse("<h2>Thanks!</h2>")
