@@ -4,17 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  <script src="{% static 'js/button.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <title>Survey</title>
 </head>
 <body>
-  <div class="content-box">
-    <div class="content">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut optio officia cupiditate nemo ab laboriosam, commodi, deserunt veniam id fugiat tempore perspiciatis, porro dolorum. Molestiae ratione sint laborum dignissimos fuga. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Adipisci dolore ut eveniet possimus tempore nemo quia minima sequi. Dignissimos molestiae tempore explicabo eum tenetur obcaecati minima neque aperiam molestias assumenda! Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci quas eum exercitationem neque eaque similique aliquam modi commodi, praesentium sequi sed quidem optio sapiente quisquam. Quas esse ratione corrupti error! Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti commodi provident maiores voluptates quo dolorum veritatis vero harum at asperiores rerum possimus autem dolores culpa ducimus exercitationem, facere magnam quasi?
-    </div>
-    <div class="content-footer">
-      <button class="accept-button">START SURVEY</button>
-    </div>
+  <div id="app">
+    <div :is="currentComponent" :swap-component="swapComponent"></div>
   </div>
+  <script src="{% static 'js/index.js' %}"></script>
 </body>
 </html>
