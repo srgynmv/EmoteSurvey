@@ -3,3 +3,4 @@ django_env
 __pycache__
 /emotesurvey/run/*
 !/emotesurvey/run/README.txt
+.idea
