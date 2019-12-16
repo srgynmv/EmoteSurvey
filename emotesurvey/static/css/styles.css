@@ -54,3 +54,8 @@ body {
     background-color: #00d97e;
     border-color: #00d97e;
 }
+
+.accept-button:disabled {
+    background-color: #b4bebe;
+    border-color: #b4bebe;
+}

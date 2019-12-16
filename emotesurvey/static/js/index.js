@@ -1,3 +1,8 @@
+function hasGetUserMedia() {
+    return !!(navigator.mediaDevices &&
+        navigator.mediaDevices.getUserMedia);
+}
+
 Vue.options.delimiters = ["[[", "]]"]
 
 Vue.component('survey-greet', {
@@ -5,10 +10,10 @@ Vue.component('survey-greet', {
     <div class="content-box">
         <div class="content" v-html="content"></div>
         <div class="content-footer">
-            <button class="accept-button" @click="swapComponent('survey-question')">START SURVEY</button>
+            <button class="accept-button" @click="start">START SURVEY</button>
         </div>
     </div>`,
-    props: ['swapComponent'],
+    props: ['start'],
     data: function () {
         return {
             content: "Welcome to Survey! Please allow access to the camera for analysis of test data."
@@ -48,7 +53,7 @@ Vue.component('survey-question', {
             </div>
         </div>
     </div>`,
-    props: ['swapComponent'],
+    props: ['swapComponent', 'mediaRecorder'],
     data: function () {
         return {
             content: 'Loading...',
@@ -81,20 +86,48 @@ Vue.component('survey-question', {
                 default:
                     this.result = null
             }
+            this.startRecord()
         },
         submitResult() {
             console.log(this.result)
-            let questions = this.questions
-            let nextQuestionIdx = questions.indexOf(this.currentQuestion) + 1
-            if (nextQuestionIdx < questions.length) {
-                this.setCurrentQuestion(questions[nextQuestionIdx])
-            }
-            else {
-                this.swapComponent('survey-thanks')
-            }
+            this.stopRecord()
+                .then((result) => {
+                    console.log(result.videoUrl)
+                    let questions = this.questions
+                    let nextQuestionIdx = questions.indexOf(this.currentQuestion) + 1
+                    if (nextQuestionIdx < questions.length) {
+                        this.setCurrentQuestion(questions[nextQuestionIdx])
+                    }
+                    else {
+                        this.swapComponent('survey-thanks')
+                    }
+                })
         }
     },
     mounted() {
+        var chunks = []
+        this.mediaRecorder.ondataavailable = (e) => {
+            chunks.push(e.data);
+        }
+
+        this.startRecord = () => this.mediaRecorder.start()
+
+        this.stopRecord = () =>
+            new Promise(resolve => {
+                if (this.mediaRecorder.state === 'inactive') {
+                    resolve({})
+                }
+
+                this.mediaRecorder.onstop = () => {
+                    const videoBlob = new Blob(chunks, {type: 'video/webm'})
+                    const videoUrl = URL.createObjectURL(videoBlob)
+                    chunks = []
+                    resolve({ videoBlob, videoUrl })
+                }
+
+                this.mediaRecorder.stop()
+            })
+
         axios.get('/api/questions')
             .then(response => {
                 this.questions = response.data
@@ -122,11 +155,33 @@ Vue.component('survey-thanks', {
 var app = new Vue({
     el: '#app',
     data: {
-        currentComponent: 'survey-greet'
+        currentComponent: 'survey-greet',
+        mediaRecorder: null
     },
     methods: {
-        swapComponent: function(component) {
-          this.currentComponent = component
+        swapComponent: function (component) {
+            this.currentComponent = component
+        },
+        start: function () {
+            const constraints = {
+                video: true
+            };
+
+            if (!hasGetUserMedia()) {
+                alert('getUserMedia() is not supported by your browser')
+                return
+            }
+
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then((stream) => {
+                    var options = {
+                        mimeType: 'video/webm'
+                    }
+                    this.mediaRecorder = new MediaRecorder(stream, options)
+                    this.swapComponent('survey-question')
+                }, function (error) {
+                    alert('Cannot get access to the camera.')
+                })
         }
     }
 });
