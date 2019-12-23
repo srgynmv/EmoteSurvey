@@ -53,7 +53,7 @@ Vue.component('survey-question', {
             </div>
         </div>
     </div>`,
-    props: ['swapComponent', 'mediaRecorder'],
+    props: ['swapComponent', 'mediaRecorder', 'videoSavingEnabled'],
     data: function () {
         return {
             content: 'Loading...',
@@ -89,12 +89,17 @@ Vue.component('survey-question', {
             this.startRecord()
         },
         submitResult() {
-            console.log(this.result)
             this.stopRecord()
-                .then((result) => {
-                    console.log(result.videoUrl)
+                .then((videoBlob) => {
                     let questions = this.questions
-                    let nextQuestionIdx = questions.indexOf(this.currentQuestion) + 1
+                    let currentQuestionIdx = questions.indexOf(this.currentQuestion)
+
+                    if (this.videoSavingEnabled) {
+                        console.log(this.result)
+                        this.downloadFile(videoBlob, `question-${currentQuestionIdx}.webm`)
+                    }
+
+                    let nextQuestionIdx = currentQuestionIdx + 1
                     if (nextQuestionIdx < questions.length) {
                         this.setCurrentQuestion(questions[nextQuestionIdx])
                     }
@@ -102,6 +107,17 @@ Vue.component('survey-question', {
                         this.swapComponent('survey-thanks')
                     }
                 })
+        },
+        downloadFile(blob, fileName) {
+            let a = document.createElement('a')
+            document.body.appendChild(a)
+            a.style = 'display: none'
+            url = URL.createObjectURL(blob)
+            a.href = url
+            a.download = fileName
+            a.click()
+            document.body.removeChild(a)
+            URL.revokeObjectURL(url)
         }
     },
     mounted() {
@@ -120,9 +136,8 @@ Vue.component('survey-question', {
 
                 this.mediaRecorder.onstop = () => {
                     const videoBlob = new Blob(chunks, {type: 'video/webm'})
-                    const videoUrl = URL.createObjectURL(videoBlob)
                     chunks = []
-                    resolve({ videoBlob, videoUrl })
+                    resolve(videoBlob)
                 }
 
                 this.mediaRecorder.stop()
@@ -156,7 +171,8 @@ var app = new Vue({
     el: '#app',
     data: {
         currentComponent: 'survey-greet',
-        mediaRecorder: null
+        mediaRecorder: null,
+        videoSavingEnabled: false
     },
     methods: {
         swapComponent: function (component) {
