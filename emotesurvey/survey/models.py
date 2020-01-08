@@ -50,7 +50,7 @@ class Result(models.Model):
 class RecordedData(models.Model):
     result = models.ForeignKey(Result, related_name='recorded_data_set',
                                on_delete=models.CASCADE)
-    timestamp = models.TimeField()
+    timestamp = models.DurationField()
     surprise = models.FloatField()
     fear = models.FloatField()
     happiness = models.FloatField()

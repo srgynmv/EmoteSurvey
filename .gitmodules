@@ -1,0 +1,3 @@
+[submodule "emotesurvey/emotenn"]
+	path = emotesurvey/emotenn
+	url = https://github.com/srgynmv/EmoteNN.git
