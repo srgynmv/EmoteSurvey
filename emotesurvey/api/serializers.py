@@ -1,3 +1,4 @@
+import base64
 from survey.models import *
 from rest_framework import serializers
 
@@ -34,14 +35,20 @@ class RecordedDataSerializer(serializers.ModelSerializer):
 
 
 class RawResultSerializer(serializers.Serializer):
-    # TODO(srgynmv): add session and recorded_data
+    # TODO(srgynmv): add session
     question = serializers.IntegerField()
     answers = serializers.ListField(child=serializers.CharField(),
                                     allow_empty=False)
+    recordedData = serializers.CharField() # base64
 
     def create(self, validated_data):
         question = Question.objects.get(pk=validated_data['question'])
         result = Result.objects.create(question=question)
+
+        recorded_data_base64 = validated_data['recordedData'].split(',', 1)[1].encode()
+        video = base64.decodebytes(recorded_data_base64)
+        # TODO(srgynmv): implement a video parsing
+
         for answer_text in validated_data['answers']:
             answer, created = Answer.objects.get_or_create(question=question, text=answer_text)
             result.answers.add(answer)

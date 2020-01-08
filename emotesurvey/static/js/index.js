@@ -4,6 +4,8 @@ function hasGetUserMedia() {
 }
 
 Vue.options.delimiters = ["[[", "]]"]
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFTOKEN'
 
 Vue.component('survey-greet', {
     template: `
@@ -90,7 +92,7 @@ Vue.component('survey-question', {
         },
         submitResult() {
             this.stopRecord()
-                .then((videoBlob) => {
+                .then(videoBlob => {
                     let questions = this.questions
                     let currentQuestionIdx = questions.indexOf(this.currentQuestion)
 
@@ -98,6 +100,18 @@ Vue.component('survey-question', {
                         console.log(this.result)
                         this.downloadFile(videoBlob, `question-${currentQuestionIdx}.webm`)
                     }
+
+                    let questionId = this.currentQuestion.id
+                    let answers = typeof(this.result) === 'string' ? [this.result] : this.result
+                    let reader = new FileReader()
+                    reader.onloadend = function() {
+                        axios.post('/api/results/', {
+                            question: questionId,
+                            answers: answers,
+                            recordedData: reader.result,
+                        })
+                    }
+                    reader.readAsDataURL(videoBlob)
 
                     let nextQuestionIdx = currentQuestionIdx + 1
                     if (nextQuestionIdx < questions.length) {
@@ -143,7 +157,7 @@ Vue.component('survey-question', {
                 this.mediaRecorder.stop()
             })
 
-        axios.get('/api/questions')
+        axios.get('/api/questions/')
             .then(response => {
                 this.questions = response.data
                 this.setCurrentQuestion(this.questions[0])

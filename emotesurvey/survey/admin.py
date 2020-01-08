@@ -20,3 +20,4 @@ class SurveyAdmin(NestedModelAdmin):
 
 
 admin.site.register(Survey, SurveyAdmin)
+admin.site.register(Result)
