@@ -7,6 +7,7 @@ from survey.tests import TestWithQuestions
 from . import views
 from . import serializers
 
+from datetime import timedelta
 
 class TestWithQuestionsAndResults(TestWithQuestions):
     def setUp(self):
@@ -28,7 +29,7 @@ class TestWithQuestionsAndResults(TestWithQuestions):
 
         RecordedData.objects.create(
             result=r3,
-            timestamp='00:00',
+            timestamp=timedelta(seconds=1),
             surprise=0.1,
             fear=0.3,
             happiness=0.1,
@@ -59,7 +60,8 @@ class RawResultCreateTest(TestWithQuestions):
         url = reverse('api:result-list')
         data = {
             'question': self.q2.pk,
-            'answers': ['answer3', 'answer4']
+            'answers': ['answer3', 'answer4'],
+            'recordedData': ',dGVzdA==\n'
         }
 
         request = factory.post(url, data=data, format='json')
