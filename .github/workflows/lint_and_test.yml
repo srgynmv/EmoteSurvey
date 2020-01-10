@@ -8,7 +8,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout the commit
+      uses: actions/checkout@v2
+    - name: Checkout emotenn submodule
+      uses: actions/checkout@v2
+      with:
+        token: '${{ secrets.GITHUB_PAT }}'
+        repository: srgynmv/EmoteNN
+        path: emotesurvey/emotenn
+        ref: 'master'
     - name: Set up Python 3.6
       uses: actions/setup-python@v1
       with:
